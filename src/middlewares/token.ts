@@ -9,7 +9,7 @@ export const userExist = async (
     next: NextFunction,
   ) => {
     if (!req.headers?.authorization) {
-      res.status(403).send("Not Authorized")
+      return res.status(403).send("Not Authorized")
     }
   
     const bearerToken = req.headers.authorization;

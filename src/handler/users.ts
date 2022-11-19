@@ -38,7 +38,7 @@ const login = async (req:Request, res:Response) => {
 const UsersRoutes = (app: express.Application) => {
     app.get('/users',userExist, index),
     app.get('/users/:id',userExist, show)   
-    app.post('/users',userExist, create)
+    app.post('/users', create)
     app.delete('/users/:id',userExist, destroy)
     app.post('/users/login', login)
 

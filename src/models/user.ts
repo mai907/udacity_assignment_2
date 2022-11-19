@@ -9,6 +9,7 @@ export type User ={
     lastname: string;
     email:string;
     password: string;
+    token: string;
 };
 
 export class UserStore {
@@ -45,8 +46,17 @@ export class UserStore {
         const passwordHashed = await Password.toHash(password)
         const sql = 'INSERT INTO users (firstname, lastname, email, password) VALUES($1, $2, $3, $4) RETURNING id, firstname, lastname, email';
         const result = await conn.query(sql,[firstname,lastname,email, passwordHashed]);
+        const user = result.rows[0]
+        const token =jwt.sign(
+          {
+            id: user.id,
+            email: user.email,
+          },
+        process.env.TOKEN_SECRET!,
+        );
+        user.token = token
         conn.release();
-        return result.rows[0];
+        return user;
     }
     catch(error){
         throw new Error(`cannot get users ${error}`)
