@@ -2,11 +2,16 @@ import Client from '../database';
 
 export interface Order {
     id: number;
-    product_id: number;
     user_id: number;
-    quantity: number;
     status: string;
 
+};
+
+export interface Order_products {
+  id: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
 };
 
 export class OrderStore {
@@ -37,16 +42,34 @@ export class OrderStore {
         }
       }
 
-   async create(product_id:number, user_id:number,quantity:number, status:string): Promise<Order>{
+   async create(user_id:number, status:string): Promise<Order>{
     try{
         const conn = await Client.connect();
-        const sql = 'INSERT INTO orders (product_id, user_id, quantity, status) VALUES($1, $2, $3, $4) RETURNING *';
-        const result = await conn.query(sql,[product_id, user_id, quantity, status]);
+        const sql = 'INSERT INTO orders ( user_id, status) VALUES($1, $2) RETURNING *';
+        const result = await conn.query(sql,[ user_id, status]);
         conn.release();
         return result.rows[0];
     }
     catch(error){
         throw new Error(`cannot add to  orders ${error}`)
+    }
+  }
+
+  async addProduct(quantity: number, orderId: number, productId: number): Promise<Order_products> {
+    try {
+      const sql = 'INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *'
+      const conn = await Client.connect()
+
+      const result = await conn
+          .query(sql, [quantity, orderId, productId])
+
+      const order = result.rows[0]
+
+      conn.release()
+
+      return order
+    } catch (err) {
+      throw new Error(`cannot add orders ${err}`)
     }
   }
 

@@ -8,7 +8,7 @@ import Client from '../../database';
 const userStore = new UserStore();
 const productStore = new ProductStore();
 const orderStore = new OrderStore();
-describe("User Model", () => {
+describe("Order Model", () => {
 
 beforeEach(async () => {
   const conn = await Client.connect()
@@ -25,38 +25,44 @@ beforeEach(async () => {
   });
 
   it('returns 200 list one order given id', async function () {
-    const name = "product_1", price = 50, category = "clothes";
     const firstname = "user", lastname = "test", email = "user@t.com", password = "123456";
-    const quantity=10, status="active"
+    const status="active"
 
-    const product = await productStore.create(name, price, category);
     const user = await userStore.create(firstname, lastname, email, password);
-    const order = await orderStore.create(product?.id, user?.id, quantity, status);
+    const order = await orderStore.create(user?.id, status);
 
     await supertest(app).get(`/orders/${order.id}`).set({ Authorization: `Bearer ${user?.token}` }).expect(200);
   });
 
   it('returns 200 delete one order given id', async function () {
-    const name = "product_1", price = 50, category = "clothes";
     const firstname = "user", lastname = "test", email = "user@t.com", password = "123456";
-    const quantity=10, status="active"
+    const status="active"
 
-    const product = await productStore.create(name, price, category);
     const user = await userStore.create(firstname, lastname, email, password);
-    const order = await orderStore.create(product?.id, user?.id, quantity, status);
+    const order = await orderStore.create(user?.id, status);
 
     await supertest(app).delete(`/orders/${order.id}`).set({ Authorization: `Bearer ${user?.token}` }).expect(200);
   });  
 
   it('returns 200 create order', async function () {
+    const firstname = "user", lastname = "test", email = "user@t.com", password = "123456";
+    const status="active"
+
+    const user = await userStore.create(firstname, lastname, email, password);
+    
+    await supertest(app).post(`/orders`).set({ Authorization: `Bearer ${user?.token}` }).send({user_id:user.id, status}).expect(200);
+  });
+
+  it('returns 200 add product to an order', async function () {
     const name = "product_1", price = 50, category = "clothes";
     const firstname = "user", lastname = "test", email = "user@t.com", password = "123456";
     const quantity=10, status="active"
 
     const product = await productStore.create(name, price, category);
     const user = await userStore.create(firstname, lastname, email, password);
+    const order = await orderStore.create(user?.id, status);
     
-    await supertest(app).post(`/orders`).set({ Authorization: `Bearer ${user?.token}` }).send({product_id:product.id, user_id:user.id, quantity, status}).expect(200);
+    await supertest(app).post(`/orders/${order.id}/products`).set({ Authorization: `Bearer ${user?.token}` }).send({productId:product.id, quantity}).expect(200);
   });
 
   it('returns 403 list all orders (No Token)', async function () {
@@ -64,25 +70,21 @@ beforeEach(async () => {
   });
 
   it('returns 403 list one order given id (No Token)', async function () {
-    const name = "product_1", price = 50, category = "clothes";
     const firstname = "user", lastname = "test", email = "user@t.com", password = "123456";
-    const quantity=10, status="active"
+    const status="active"
 
-    const product = await productStore.create(name, price, category);
     const user = await userStore.create(firstname, lastname, email, password);
-    const order = await orderStore.create(product?.id, user?.id, quantity, status);
+    const order = await orderStore.create(user?.id, status);
 
     await supertest(app).get(`/orders/${order.id}`).expect(403);
   });
 
   it('returns 403 delete one order given id (No Token)', async function () {
-    const name = "product_1", price = 50, category = "clothes";
     const firstname = "user", lastname = "test", email = "user@t.com", password = "123456";
-    const quantity=10, status="active"
+    const status="active"
 
-    const product = await productStore.create(name, price, category);
     const user = await userStore.create(firstname, lastname, email, password);
-    const order = await orderStore.create(product?.id, user?.id, quantity, status);
+    const order = await orderStore.create( user?.id, status);
 
     await supertest(app).delete(`/orders/${order.id}`).expect(403);
   }); 
@@ -96,5 +98,17 @@ beforeEach(async () => {
     const user = await userStore.create(firstname, lastname, email, password);
     
     await supertest(app).post(`/orders`).send({product_id:product.id, user_id:user.id, quantity, status}).expect(403);
+  });
+
+  it('returns 403 add product to an order (No Token)', async function () {
+    const name = "product_1", price = 50, category = "clothes";
+    const firstname = "user", lastname = "test", email = "user@t.com", password = "123456";
+    const quantity=10, status="active"
+
+    const product = await productStore.create(name, price, category);
+    const user = await userStore.create(firstname, lastname, email, password);
+    const order = await orderStore.create(user?.id, status);
+    
+    await supertest(app).post(`/orders/${order.id}/products`).send({productId:product.id, quantity}).expect(403);
   });
 });

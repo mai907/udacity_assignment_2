@@ -1,8 +1,15 @@
 import { Product ,ProductStore} from "../product";
-
+import Client from '../../database';
 const store = new ProductStore();
 
 describe("Product Model", ()=>{
+  beforeAll(async () => {
+    const conn = await Client.connect()
+    const sql = 'TRUNCATE users CASCADE'
+     await conn.query(sql)
+    conn.release()
+  
+  }) 
     it("should have n index method", ()=>{
         expect(store.index).toBeDefined();
     });

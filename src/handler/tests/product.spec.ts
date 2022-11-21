@@ -6,7 +6,7 @@ import Client from '../../database';
 
 const userStore = new UserStore();
 const productStore = new ProductStore();
-describe("User Model", () => {
+describe("Product Model", () => {
 
 beforeEach(async () => {
   const conn = await Client.connect()

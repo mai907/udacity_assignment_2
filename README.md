@@ -146,7 +146,24 @@ and then head to your browser at `localhost:3000` and it should be working.
 
 | Body      | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `product_id`  | `number` | **Required**. |
 | `user_id`     | `number` | **Required**. |
-| `quantity`    | `number` | **Required**. |
 | `status`      | `string` | **Required**. |
+
+#### Add one product to an order
+
+```http
+  POST http://localhost:3000/orders/:id/products
+```
+| headers         | Type           | Description                       |
+| :-------------- | :------------- | :-------------------------- |
+| `Authorization` | `Bearer token` | 
+
+| Params      | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id`      | `number` | **Required**. |
+
+
+| Body      | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `productId`  | `number` | **Required**. |
+| `quantity`    | `number` | **Required**. |
