@@ -26,12 +26,40 @@ These are the notes from a meeting with the frontend developer that describe wha
 - name
 - price
 - [OPTIONAL] category
+```
+                                     Table "public.products"
+  Column  |          Type          | Collation | Nullable |               Default                
+----------+------------------------+-----------+----------+--------------------------------------
+ id       | integer                |           | not null | nextval('products_id_seq'::regclass)
+ name     | character varying(255) |           | not null | 
+ price    | integer                |           |          | 
+ category | character varying(255) |           |          | 
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "order_products" CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id)
+```
 
 #### User
 - id
 - firstName
 - lastName
 - password
+```
+                                     Table "public.users"
+  Column   |          Type          | Collation | Nullable |              Default              
+-----------+------------------------+-----------+----------+-----------------------------------
+ id        | integer                |           | not null | nextval('users_id_seq'::regclass)
+ firstname | character varying(255) |           | not null | 
+ lastname  | character varying(255) |           | not null | 
+ email     | character varying(255) |           | not null | 
+ password  | text                   |           | not null | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+    "users_email_key" UNIQUE CONSTRAINT, btree (email)
+Referenced by:
+    TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+```
 
 #### Orders
 - id
@@ -40,3 +68,32 @@ These are the notes from a meeting with the frontend developer that describe wha
 - user_id
 - status of order (active or complete)
 
+```
+                               Table "public.orders"
+ Column  |     Type     | Collation | Nullable |              Default               
+---------+--------------+-----------+----------+------------------------------------
+ id      | integer      |           | not null | nextval('orders_id_seq'::regclass)
+ user_id | bigint       |           | not null | 
+ status  | order_status |           |          | 
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+Referenced by:
+    TABLE "order_products" CONSTRAINT "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
+```
+
+```
+                              Table "public.order_products"
+   Column   |  Type   | Collation | Nullable |                  Default                   
+------------+---------+-----------+----------+--------------------------------------------
+ id         | integer |           | not null | nextval('order_products_id_seq'::regclass)
+ quantity   | integer |           |          | 
+ order_id   | bigint  |           | not null | 
+ product_id | bigint  |           | not null | 
+Indexes:
+    "order_products_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
+    "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id)
+```
