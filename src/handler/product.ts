@@ -44,8 +44,8 @@ const destroy = async (req: Request, res: Response) => {
 };
 
 const ProductsRoutes = (app: express.Application) => {
-  app.get("/products", userExist, index);
-  app.get("/products/:id", userExist, show);
+  app.get("/products", index);
+  app.get("/products/:id", show);
   app.post("/products", userExist, create);
   app.delete("/products/:id", userExist, destroy);
 };
