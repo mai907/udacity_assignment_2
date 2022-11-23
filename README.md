@@ -5,7 +5,7 @@
 1-Create user
 
 ```
-CREATE USER udacity WITH PASSWORD 'udacity1234'
+CREATE USER udacity WITH PASSWORD 'udacity1234';
 ```
 
 2-Create Databases
@@ -18,8 +18,8 @@ CREATE DATABASE udacity_test;
 3-Give previleges to user on databases
 
 ```
-GRANT ALL PRIVILGES ON DATABASE udacity_dev TO udacity ;
-GRANT ALL PRIVILGES ON DATABASE udacity_test TO udacity ;
+GRANT ALL PRIVILEGES ON DATABASE udacity_dev TO udacity;
+GRANT ALL PRIVILEGES ON DATABASE udacity_test TO udacity;
 ```
 
 ## Setup Steps
