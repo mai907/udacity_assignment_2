@@ -1,5 +1,27 @@
 # Storefront Backend Project
 
+## DATABASE
+
+1-Create user
+
+```
+CREATE USER udacity WITH PASSWORD 'udacity1234'
+```
+
+2-Create Databases
+
+```
+CREATE DATABASE udacity_dev;
+CREATE DATABASE udacity_test;
+```
+
+3-Give previleges to user on databases
+
+```
+GRANT ALL PRIVILGES ON DATABASE udacity_dev TO udacity ;
+GRANT ALL PRIVILGES ON DATABASE udacity_test TO udacity ;
+```
+
 ## Setup Steps
 To get started, clone this repo and open your terminal at the project root.
 
@@ -9,6 +31,7 @@ and then in your terminal run:
 3. `db-migrate up`
 4. `npm run watch`
 
+The database running on port 5432
 and then head to your browser at `localhost:3000` and it should be working.
 
 
